@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"></meta>
+  <meta name="renderer" content="webkit"></meta>
+  #if($faviconUrl)
+      <link rel="icon" href="${faviconUrl}">
+  #end
+  <title>${clazz.name}学习记录表</title>
+  <style>
+    * {
+      font-family: "simsun";
+    }
+    .main-container {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .main-container .title{
+      text-align: center;
+      margin-bottom: 0px;
+    }
+    .table {
+      border-spacing: 0;
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 40px;
+      font-size: 14px;
+    }
+    .table>tbody>tr>td,
+    .table>tbody>tr>th,
+    .table>tfoot>tr>td,
+    .table>tfoot>tr>th,
+    .table>thead>tr>td,
+    .table>thead>tr>th {
+      padding: 5px;
+      line-height: 1.35;
+      vertical-align: top;
+      border-top: 1px solid;
+    }
+    .table>tbody>tr>td,
+    .table>tbody>tr>th,
+    .table>tfoot>tr>td,
+    .table>tfoot>tr>th,
+    .table>thead>tr>td,
+    .table>thead>tr>th {
+      border: 1px solid;
+    }
+    .table tr.width-container td{
+      padding: 0;
+      border: 0;
+    }
+    .table tr td p{
+      margin-top: 0;
+    }
+    .table tr td p:last-child{
+      margin-bottom: 0;
+    }
+    .table tr td .image-container {
+      text-align: center;
+    }
+    .table tr td .image-container img{
+      max-width: 170px;
+      max-height: 120px;
+      margin-right: 10px;
+      display:inline-block;
+      float:left;
+    }
+    .inscriber {
+      text-align: right;
+      padding-right: 250px;
+      margin-bottom: 20px;
+    }
+    .inscriber.sign {
+        padding-right: 170px;
+    }
+    .inscriber.sign img{
+        width: 80px;
+        height: auto;
+    }
+    .print-group {
+      text-align: right;
+    }
+    .print-group .btn{
+      font-size: 14px;
+      line-height: 24px;
+      margin-left: 5px;
+    }
+  </style>
+  <style media="print">
+    .ignore-print-btn {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div class="main-container">
+  <div class="print-group ignore-print-btn">
+    <button onclick="window.print()" class="btn">
+      打印
+    </button>
+    #if($pdfUrl)
+    <button onclick="window.open(`${pdfUrl}`)" class="btn">
+      下载
+    </button>
+    #end
+  </div>
+  <h2 class="title">${clazz.name}学习记录表</h2>
+  <table border="0" class="table" cellspacing="0">
+    <!-- 控制单元格宽度 -->
+    <tr class="width-container">
+      <td width="5%">&nbsp;</td>
+      <td width="5%">&nbsp;</td>
+      <td width="5%">&nbsp;</td>
+      <td width="5%">&nbsp;</td>
+      <td width="5%">&nbsp;</td>
+      <td width="5%">&nbsp;</td>
+      <td width="5%">&nbsp;</td>
+      <td width="5%">&nbsp;</td>
+      <td width="5%">&nbsp;</td>
+      <td width="5%">&nbsp;</td>
+      <td width="5%">&nbsp;</td>
+      <td width="5%">&nbsp;</td>
+      <td width="5%">&nbsp;</td>
+      <td width="5%">&nbsp;</td>
+      <td width="5%">&nbsp;</td>
+      <td width="5%">&nbsp;</td>
+      <td width="5%">&nbsp;</td>
+      <td width="5%">&nbsp;</td>
+    </tr>
+    <tr>
+      <td colspan="2">姓名</td><td colspan="7">$!{a.name}</td>
+      <td colspan="2">身份证号</td><td colspan="7">$!{a.idno}</td>
+    </tr>
+    <tr>
+      <td colspan="2">学员编号</td><td colspan="7">#if($a.customId) ${a.customId} #else ${a.id} #end</td>
+      <td colspan="2">单位名称</td><td colspan="7">$!{orgName}</td>
+    </tr>
+    <tr>
+      <td colspan="2">车牌号码</td><td colspan="7">$!{a.vehicleNo}</td>
+      <td colspan="2">手机号码</td><td colspan="7">$!{a.mobile}</td>
+    </tr>
+    <tr>
+      <td colspan="2">培训课程</td><td colspan="7">$!{clazz.name}</td>
+      <td colspan="2">学习周期</td><td colspan="7">$_util.format($stuClazz.startTime, null) - $_util.format($stuClazz.endTime, null)</td>
+    </tr>
+	#set ($count = 0)
+	#if($clazzRule.reqNum>0) #set ($count = $count + 1) #end
+	#if($clazzRule.optNum>0) #set ($count = $count + 1) #end
+	#if($clazzRule.quizNum>0) #set ($count = $count + 1) #end
+    ## 只有readJoinExam为true, 这里才会展示阅读
+	#if($clazz.readCount>0 && $clazz.readJoinExam) #set ($count = $count + 1) #end
+
+	#if($clazzRule.reqNum>0)
+	<tr>
+	  <td rowspan="${count}" colspan="2">学习概况</td>
+	  <td colspan="2">必修</td>
+	  <td colspan="14">${reqPass}（${reqProgress}）</td>
+	</tr>
+	#end
+
+	#if($clazzRule.optNum>0)
+	<tr>
+	  #if($clazzRule.reqNum==0)
+	  <td rowspan="${count}" colspan="2">学习概况</td>
+	  #end
+	  <td colspan="2">选修</td>
+	  <td colspan="14">${optPass}（${optProgress}）</td>
+	</tr>
+	#end
+
+	#if($clazzRule.quizNum>0)
+	<tr>
+	  #if($clazzRule.reqNum==0 && $clazzRule.optNum==0)
+	  <td rowspan="${count}" colspan="2">学习概况</td>
+	  #end
+	  <td colspan="2">考试</td>
+	  <td colspan="14">#if($stuClazz.quizProgress>=100) 合格 #else 不合格 #end</td>
+	</tr>
+	#end
+
+    ## 只有readJoinExam为true, 这里才会展示阅读
+	#if($clazz.readCount>0 && $clazz.readJoinExam)
+	<tr>
+	  #if($clazzRule.reqNum==0 && $clazzRule.optNum==0 && $clazzRule.quizNum==0)
+	  <td rowspan="${count}" colspan="2">学习概况</td>
+	  #end
+	  <td colspan="2">阅读</td>
+	  <td colspan="14">#if($stuClazz.readProgress>=100) 合格 #else 不合格 #end</td>
+	</tr>
+	#end
+
+    #if($clazz.faceRecog == 1 || $clazz.faceRecog == 2)
+      <tr>
+        <td colspan="2">学习抓拍</td>
+        <td colspan="16">
+          <p>人脸识别通过率：#if($clazz.faceRecog == 1 || $clazz.faceRecog == 2) $stuClazz.faceSuccess% #else 无 #end</p>
+          <div class="image-container">
+            #if($faces)
+            #foreach($imgSrc in $faces)
+            <img src="$imgSrc"></img>
+            #end
+            #else
+            <span>无照片</span>
+            #end
+          </div>
+        </td>
+      </tr>
+    #end
+
+    #if($clazzRule.reqNum>0 || $clazzRule.optNum>0)
+    <tr>
+      <td colspan="18">课件学习详情</td>
+    </tr>
+    <!-- 循环输出 -->
+    <tr>
+      <td colspan="6">学习内容</td>
+      <td colspan="4">学习开始时间</td>
+      <td colspan="4">学习结束时间</td>
+      <td colspan="4">学习时长</td>
+    </tr>
+    #foreach($log in $cLogs)
+    #set( $dur = $log.strictDuration / 60 )
+    <tr>
+      <td colspan="6">$cLeaves[$log.itemId].label</td>
+      <td colspan="4">$_util.format($log.firstTime,'yyyy-MM-dd HH:mm')</td>
+      <td colspan="4">$_util.format($log.lastTime,'yyyy-MM-dd HH:mm')</td>
+    <td colspan="4">
+        #if($log.strictDuration == 0)
+            0秒
+        #else
+            ## 例如 1分钟21秒 或 59秒
+            #if($dur>=1)$dur分钟#end#set( $durSec = $log.strictDuration % 60 )$durSec秒
+        #end
+    </td>
+
+    </tr>
+    #end
+    #end
+    #if( $papers && $papers.size()>0)
+    <tr>
+      <td colspan="18">考试详情</td>
+    </tr>
+    #end
+    #foreach($paper in $papers)
+    <tr>
+      <td colspan="6">$paper[1].name</td>
+      <td colspan="2">考试得分</td>
+      <td colspan="4">#if($qLogs[$paper[0].id]) $qLogs[$paper[0].id].score #else 无 #end</td>
+      <td colspan="2">及格分数</td>
+      <td colspan="4">$paper[0].passScore</td>
+    </tr>
+    #end
+    #if($readRecords && $readRecords.size()>0)
+    <tr>
+      <td colspan="18">阅读详情</td>
+    </tr>
+    <tr>
+      <td colspan="10">阅读内容</td>
+      <td colspan="8">学习时间</td>
+    </tr>
+    #foreach($read in $readRecords)
+    <tr>
+      <td colspan="10">$read.title</td>
+      <td colspan="8">$_util.format($read.readTime,'yyyy-MM-dd HH:mm')</td>
+    </tr>
+    #end
+    #end
+  </table>
+  #if($clazz.enableSign)
+    #if($signImg)
+      <p class="inscriber sign">
+        <span>签字：</span><img src="$signImg"/>
+      </p>
+    #else
+        <p class="inscriber">签字：</p>
+    #end
+  #end
+</div>
+
+</body>
+</html>
