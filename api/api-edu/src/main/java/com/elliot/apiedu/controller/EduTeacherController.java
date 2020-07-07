@@ -6,6 +6,8 @@ import com.elliot.apiedu.entity.EduTeacher;
 import com.elliot.apiedu.entity.vo.TeacherQuery;
 import com.elliot.apiedu.service.EduTeacherService;
 import com.elliot.commutils.util.Resp;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -13,6 +15,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +34,6 @@ public class EduTeacherController {
 
   @Autowired
   private EduTeacherService teacherService;
-
 
   // @ApiResponse(code = 200, message = "返回内容")
   @ApiOperation(value = "列出所有讲师")
@@ -100,11 +102,9 @@ public class EduTeacherController {
   public Resp updateById(@ApiParam(value = "讲师Id", name = "id") @PathVariable("id") String id,
       @ApiParam(value = "id", name = "讲师对象") @RequestBody EduTeacher teacher) {
     teacher.setId(id);
-    System.out.println(id);
     teacherService.updateById(teacher);
     return Resp.ok();
   }
-
 
 }
 
